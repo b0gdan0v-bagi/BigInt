@@ -370,6 +370,7 @@ BigInt sqrt(BigInt a) {
     return x0;
 }
 BigInt pow(BigInt a, BigInt b) {
+    
     if (b == toBigInt(0)) return toBigInt(1);
     BigInt tmp = pow(a, b / 2);
     if (b % 2 == 0) return tmp * tmp;
