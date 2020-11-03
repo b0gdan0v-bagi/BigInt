@@ -7,18 +7,18 @@
 #include <sstream>   
 #include <cstdlib>
 
-using namespace std;
+//using namespace std;
 
 typedef int64_t ll;
 typedef long long ll;
-typedef pair<ll, ll> lll;
-typedef pair<ll, int> lli;
-typedef pair<int, int> ii;
+typedef std::pair<ll, ll> lll;
+typedef std::pair<ll, int> lli;
+typedef std::pair<int, int> ii;
 
 #define EL printf("\n")
 #define OK printf("OK")
-#define pb push_back
-#define mp make_pair
+//#define pb push_back
+//#define mp make_pair
 #define ep emplace_back
 #define X  first
 #define Y  second
@@ -27,29 +27,29 @@ typedef pair<int, int> ii;
 #define FORD(i,r,l) for (int i=r;i>=l;i--)
 
 const int base = 1e9;
-typedef vector<int> BigInt;
+typedef std::vector<int> BigInt;
 
 void Set(BigInt& a) {
     while (a.size() > 1 && a.back() == 0) a.pop_back();
 }
 
-string BigIntToStr(BigInt a) {
-    string res, buff;
+std::string BigIntToStr(BigInt a) {
+    std::string res, buff;
     Set(a);
-    (a.size() == 0) ? res += '0' : res += to_string(a.back());
+    (a.size() == 0) ? res += '0' : res += std::to_string(a.back());
     FORD(i, a.size() - 2, 0)
     {
-        buff = to_string(a[i]);
+        buff = std::to_string(a[i]);
         while (buff.size() != 9) buff = '0' + buff;
         res += buff;
     }
     return res;
 }
 
-BigInt toBigInt(string s) {
+BigInt toBigInt(std::string s) {
     BigInt ans;
     if (s[0] == '-') return ans;
-    if (s.size() == 0) { ans.pb(0); return ans; }
+    if (s.size() == 0) { ans.push_back(0); return ans; }
     while (s.size() % 9 != 0) s = '0' + s;
     for (int i = 0; i < s.size(); i += 9) {
         int v = 0;
@@ -61,13 +61,13 @@ BigInt toBigInt(string s) {
 }
 
 BigInt toBigInt(char c[]) {
-    string s = "";
-    FOR(i, 0, strlen(c) - 1) s = s + c[i];
+    std::string s = "";
+    for (int i = 0;i<=strlen(c)-1 ;i++) s += c[i];
     return toBigInt(s);
 }
 
 BigInt toBigInt(ll x) {
-    string s = "";
+    std::string s = "";
     while (x > 0) s = char(x % 10 + '0') + s, x /= 10;
     return toBigInt(s);
 }
@@ -76,14 +76,14 @@ BigInt toBigInt(int x) {
     return toBigInt((ll)x);
 }
 
-void operator >> (istream& in, BigInt& a) {
-    string s;
-    getline(cin, s);
+void operator >> (std::istream& in, BigInt& a) {
+    std::string s;
+    std::getline(std::cin, s);
     a = toBigInt(s);
 }
 
-void operator << (ostream& out, BigInt a) {
-    cout << BigIntToStr(a);
+void operator << (std::ostream& out, BigInt a) {
+    std::cout << BigIntToStr(a);
 }
 
 bool operator < (BigInt a, BigInt b) {
@@ -131,8 +131,6 @@ bool operator <= (BigInt a, int b) {
     return (a <= toBigInt(b));
 }
 
-
-
 BigInt max(BigInt a, BigInt b) {
     if (a > b) return a;
     return b;
@@ -148,13 +146,15 @@ BigInt operator + (BigInt a, BigInt b) {
     Set(b);
     BigInt ans;
     int carry = 0;
-    FOR(i, 0, max(a.size(), b.size()) - 1) {
+   // FOR(i, 0, max(a.size(), b.size()) - 1) 
+    for(int i = 0; i<= std::max(a.size(), b.size()) - 1;i++)
+    {
         if (i < a.size()) carry += a[i];
         if (i < b.size()) carry += b[i];
-        ans.pb(carry % base);
+        ans.push_back(carry % base);
         carry /= base;
     }
-    if (carry) ans.pb(carry);
+    if (carry) ans.push_back(carry);
     Set(ans);
     return ans;
 }
@@ -186,8 +186,8 @@ BigInt operator - (BigInt a, BigInt b) {
     int carry = 0;
     FOR(i, 0, a.size() - 1) {
         carry += a[i] - (i < b.size() ? b[i] : 0);
-        if (carry < 0) ans.pb(carry + base), carry = -1;
-        else ans.pb(carry), carry = 0;
+        if (carry < 0) ans.push_back(carry + base), carry = -1;
+        else ans.push_back(carry), carry = 0;
     }
     Set(ans);
     return ans;
@@ -263,7 +263,7 @@ BigInt operator / (BigInt a, BigInt b) {
     return ans;
 }
 
-pair<BigInt, BigInt> QR(BigInt a, BigInt b) {
+std::pair<BigInt, BigInt> QR(BigInt a, BigInt b) {
     Set(a);
     Set(b);
     if (b == toBigInt(0)) return { toBigInt("-1"),toBigInt("-1") };
