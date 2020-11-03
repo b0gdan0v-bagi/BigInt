@@ -94,25 +94,53 @@ BigInt operator/(const BigInt& b1, const BigInt& b2)
 	if (b2 == BigInt(0)) {
 		std::cout << "Warning divider = ZERO, answer is -1 \n";
 		return BigInt("-1");
+	}
 	BigInt ans, cur;
+	
 	for (int i = b1.m_values.size()-1; i>=0;i--)
 	{
-		cur.insert(cur.begin(), a[i]);
+		cur.m_values.insert(cur.m_values.begin(), b1.m_values[i]);
 		int x = 0, L = 0, R = base;
 		while (L <= R) {
 			int mid = (L + R) >> 1;
-			if (b * toBigInt(mid) > cur) {
+			if (b2 * BigInt(mid) > cur) {
 				x = mid;
 				R = mid - 1;
 			}
 			else
 				L = mid + 1;
 		}
-		cur = cur - toBigInt(x - 1) * b;
-		ans.insert(ans.begin(), x - 1);
+		cur = cur - BigInt(x - 1) * b2;
+		ans.m_values.insert(ans.m_values.begin(), x - 1);
 	}
-	Set(ans);
+	ans.Set();
 	return ans;
+}
+
+BigInt operator%(const BigInt& b1, const BigInt& b2)
+{
+	if (b2 == BigInt(0)) {
+		std::cout << "Warning divider = ZERO, answer is -1 \n";
+		return BigInt("-1");
+	}
+	BigInt cur;
+	for (int i = b1.m_values.size() - 1; i >= 0; i--)
+	{
+		cur.m_values.insert(cur.m_values.begin(), b1.m_values[i]);
+		int x = 0, L = 0, R = base;
+		while (L <= R) {
+			int mid = (L + R) >> 1;
+			if (b2 * BigInt(mid) > cur) {
+				x = mid;
+				R = mid - 1;
+			}
+			else
+				L = mid + 1;
+		}
+		cur = cur - BigInt(x - 1) * b2;
+	}
+	cur.Set();
+	return cur;
 }
 
 
