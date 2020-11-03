@@ -50,6 +50,7 @@ public:
     friend BigInt operator+(const BigInt& b1, const BigInt& b2);
     friend BigInt operator-(const BigInt& b1, const BigInt& b2);
     friend BigInt operator*(const BigInt& b1, const BigInt& b2);
+    friend BigInt operator/(const BigInt& b1, const BigInt& b2);
     
 
 

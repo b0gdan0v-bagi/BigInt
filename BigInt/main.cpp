@@ -22,9 +22,15 @@ int main()
     std::cout << "\n**\n";
     //std::cout << a+b;
     //std::cout << b << "\n";
+    const clock_t begin_time = clock();
+
     BigInt c = BigInt("123456789987654321") * BigInt("123456789987654320");
     std::cout << c - BigInt("15241578994055784077274805802316720") << "\n";
     std::cout << BigInt("123456789987654321")*BigInt("123456789987654320");
+    std::cout << BigInt("1234567899876543218383838383838477777777777777777777")*BigInt("12e333333333333342342342354644234343433456789987654320")
+        *BigInt("38381231247347237923379");
+
+    std::cout << "\nDone in " << float(clock() - begin_time) / CLOCKS_PER_SEC << " sec\n";
     //std::cin >> b;
     /*
     BigInt a = toBigInt("123456789987654321");
