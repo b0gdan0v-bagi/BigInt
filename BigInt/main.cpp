@@ -4,9 +4,22 @@
 #include <iostream> 
 #include <list>
 #include <chrono>
+#include <future>
 #include <thread>
+#include <algorithm>
+#include <fstream>
+
+int calculate(int a) {
+    return a * a;
+}
 
 
+
+bool is_prime(int x) {
+    //std::cout << "Calculating. Please, wait...\n";
+    for (int i = 2; i < x; ++i) if (x % i == 0) return false;
+    return true;
+}
 
 int main()
 {
@@ -23,7 +36,7 @@ int main()
     std::cout << "\n**\n";
     //std::cout << a+b;
     //std::cout << b << "\n";
-    const clock_t begin_time = clock();
+    
 
     //BigInt c = BigInt("123456789987654321") * BigInt("123456789987654320");
     //std::cout << c - BigInt("15241578994055784077274805802316720") << "\n";
@@ -33,12 +46,64 @@ int main()
     //std::cout << BigInt("1234567899876543218383838383838477777777777777777777") / BigInt("12e3333333333333424343433456789987654320")
     //        *BigInt("38381231247347237923379");
     //std::cout << BigInt(123456) % BigInt(10);
+    //BigInt c = factorial(10000);
+    //std::cout << c;
+    //unsigned const int nThreads = std::thread::hardware_concurrency();
+    //unsigned const int nThreads = 100;
 
-    //std::cout << sqrt(BigInt(100500)*BigInt(200501));
-    //std::cout << pow(BigInt(100500), BigInt(0));
-    //std::cout << factorial(100) - BigInt("93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000");
+    //std::cout << nThreads << "\n";
+    //std::future<int> result = std::async(calculate,3);
+    //std::cout << result.get() << std::endl;
+    std::vector<std::string> resStr;
+   
     
-    std::cout << "\nDone in " << float(clock() - begin_time) / CLOCKS_PER_SEC << " sec\n";
+    for (int nThreads = 1; nThreads <= 25; nThreads++)
+    {
+        clock_t begin_time = clock();
+        std::vector<std::future<bool>> VF;
+        for (int i = 0; i < nThreads; i++)
+        {
+            VF.push_back(std::async(is_prime, 313222313));
+        }
+        std::vector<bool> V(VF.size());
+        for (int i = 0; i < nThreads; i++)
+        {
+            V[i] = VF[i].get();
+        }
+        for (int i = 0; i < nThreads; i++)
+        {
+            //std::cout << "Checking whether " << 313222313 + i << "  is prime.\n";
+            if (V[i]) std::cout << "+";
+            else std::cout << "-";
+        }
+        float parallel = float(clock() - begin_time) / CLOCKS_PER_SEC;
+        //std::cout << "\nDone in " << float(clock() - begin_time) / CLOCKS_PER_SEC << " sec\n";
+        begin_time = clock();
+        std::cout << "\n";
+        for (int i = 0; i < nThreads; i++)
+        {
+            //std::cout << "Checking whether " << 313222313 + i << "  is prime.\n";
+            if (is_prime(313222313)) std::cout << "+";
+            else std::cout << "-";
+        }
+        std::cout << "\n";
+        //std::cout << "\nDone in " << float(clock() - begin_time) / CLOCKS_PER_SEC << " sec\n";
+        float once = float(clock() - begin_time) / CLOCKS_PER_SEC;
+        std::cout << "By " << nThreads << " done by ratio " << once / parallel << " parallel = " << parallel
+            << " once = " << once << "\n";
+        resStr.push_back(std::to_string(nThreads) + " " + std::to_string(once / parallel) + " " +
+            std::to_string(parallel) + " " + std::to_string(once));
+    }
+
+    std::ofstream output("output.txt");
+    if (output.is_open())
+    {
+        for (auto const& i : resStr) output << i << "\n";
+        output.close();
+    }
+    else std::cout << "Unable to create config.cfg file\n";
+    //system("pause");
+
     //std::cin >> b;
     /*
     BigInt a = toBigInt("123456789987654321");
