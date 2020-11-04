@@ -1,5 +1,32 @@
 #include "bigInt2.h"
 
+void BigInt::PrintStr()
+{
+	std::cout << BigIntToStr() << "\n";
+}
+
+void BigInt::PrintInt()
+{
+	for (auto i = m_values.rbegin(); i != m_values.rend(); i++) std::cout << *i;
+	std::cout << std::endl;
+}
+
+std::string BigInt::BigIntToStr()
+{
+	std::string res, buff;
+	Set();
+	(m_values.size() == 0) ? res += '0' : res += std::to_string(m_values.back());
+	for (int i = m_values.size() - 2; i >= 0; i--)
+	{
+		buff = std::to_string(m_values[i]);
+		while (buff.size() != 9) buff = '0' + buff;
+		res += buff;
+	}
+	return res;
+}
+
+void BigInt::Set() { while (m_values.size() > 1 && m_values.back() == 0) m_values.pop_back(); }
+
 std::ostream& operator<<(std::ostream& out, const BigInt& bigint)
 {
 	
@@ -117,7 +144,7 @@ BigInt operator/(const BigInt& b1, const BigInt& b2)
 	return ans;
 }
 
-BigInt operator%(const BigInt& b1, const BigInt& b2)
+BigInt operator % (const BigInt& b1, const BigInt& b2)
 {
 	if (b2 == BigInt(0)) {
 		std::cout << "Warning divider = ZERO, answer is -1 \n";
@@ -142,5 +169,49 @@ BigInt operator%(const BigInt& b1, const BigInt& b2)
 	cur.Set();
 	return cur;
 }
+
+BigInt sqrt(BigInt a)
+{
+	BigInt x0 = a, x1 = (a + BIGINT_ONE) / BIGINT_TWO;
+	while (x1 < x0) {
+		x0 = x1;
+		x1 = (x1 + a / x1) / BIGINT_TWO;
+	}
+	return x0;
+}
+
+BigInt pow(BigInt a, BigInt b) 
+{
+
+	if (b == BIGINT_ZERO) return BIGINT_ONE;
+	BigInt tmp = pow(a, b / BIGINT_TWO);
+	if (b % 2 == 0) return tmp * tmp;
+	return tmp * tmp * a;
+}
+BigInt pow(BigInt a, int b) {
+	return pow(a, (BigInt(b)));
+}
+int log(int n, BigInt a) { // log_n(a)
+	a.Set();
+	int ans = 0;
+	while (a > BIGINT_ONE) {
+		ans++;
+		a = a / n;
+	}
+	return ans;
+}
+
+BigInt factorial(int a)
+{
+	if (a == 0) return BIGINT_ONE;
+	BigInt ans = BIGINT_ONE;
+	for (int i = 1; i <= a; i++)
+	{
+		ans = ans * BigInt(i);
+	}
+	ans.Set();
+	return ans;
+}
+
 
 

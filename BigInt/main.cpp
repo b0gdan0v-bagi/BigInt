@@ -4,6 +4,7 @@
 #include <iostream> 
 #include <list>
 #include <chrono>
+#include <thread>
 
 
 
@@ -32,6 +33,11 @@ int main()
     //std::cout << BigInt("1234567899876543218383838383838477777777777777777777") / BigInt("12e3333333333333424343433456789987654320")
     //        *BigInt("38381231247347237923379");
     //std::cout << BigInt(123456) % BigInt(10);
+
+    //std::cout << sqrt(BigInt(100500)*BigInt(200501));
+    //std::cout << pow(BigInt(100500), BigInt(0));
+    //std::cout << factorial(100) - BigInt("93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000");
+    
     std::cout << "\nDone in " << float(clock() - begin_time) / CLOCKS_PER_SEC << " sec\n";
     //std::cin >> b;
     /*

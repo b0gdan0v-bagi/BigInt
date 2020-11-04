@@ -21,24 +21,10 @@ public:
     BigInt(ll x) : m_values(toBigInt(x)) {}
     BigInt(int x) : m_values(toBigInt((ll)x)) {}
 
-    void PrintStr() { std::cout << BigIntToStr() << "\n"; }
-    void PrintInt() {
-        for (auto i = m_values.rbegin(); i != m_values.rend(); i++) std::cout << *i;
-        std::cout << std::endl;
-    }
-
-    std::string BigIntToStr() {
-        std::string res, buff;
-        Set();
-        (m_values.size() == 0) ? res += '0' : res += std::to_string(m_values.back());
-        for (int i = m_values.size() - 2; i >= 0; i--)
-        {
-            buff = std::to_string(m_values[i]);
-            while (buff.size() != 9) buff = '0' + buff;
-            res += buff;
-        }
-        return res;
-    }
+    void PrintStr();
+    void PrintInt();
+    std::string BigIntToStr();
+    void Set();
 
     int getSizeOfBlocks() { return m_values.size(); }
     friend std::ostream& operator<< (std::ostream& out, const BigInt& bigint);
@@ -96,8 +82,15 @@ private:
         return toBigInt(s);
     }
 
-
-    void Set() { while (m_values.size() > 1 && m_values.back() == 0) m_values.pop_back(); }
-
-    
 };
+
+BigInt const BIGINT_ZERO = BigInt(0);
+BigInt const BIGINT_ONE = BigInt(1);
+BigInt const BIGINT_TWO = BigInt(2);
+
+
+BigInt sqrt(BigInt a);
+BigInt pow(BigInt a, BigInt b);
+BigInt pow(BigInt a, int b);
+int log(int n, BigInt a);
+BigInt factorial(int a);
