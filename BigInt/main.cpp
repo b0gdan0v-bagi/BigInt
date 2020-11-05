@@ -9,11 +9,6 @@
 #include <algorithm>
 #include <fstream>
 
-int calculate(int a) {
-    return a * a;
-}
-
-
 
 bool is_prime(int x) {
     //std::cout << "Calculating. Please, wait...\n";
@@ -21,19 +16,17 @@ bool is_prime(int x) {
     return true;
 }
 
+BigInt powP(BigInt a, BigInt b, int nThreads)
+{
+    if (b == BIGINT_ZERO) return BIGINT_ONE;
+    BigInt tmp = pow(a, b / BIGINT_TWO);
+    if (b % 2 == 0) return tmp * tmp;
+    return tmp * tmp * a;
+}
+
 int main()
 {
-    BigInt a("123456789987654321");
-    std::cout << a.BigIntToStr() << "\n";
-    a.PrintStr();
-    a.PrintInt();
-    std::cout << a.getSizeOfBlocks() << "\n";
-    
-    BigInt b(1234);
-    std::cout << b << "\n" << b.getSizeOfBlocks() << "\n";
 
-    std::cout << (a > b);
-    std::cout << "\n**\n";
     //std::cout << a+b;
     //std::cout << b << "\n";
     
@@ -55,8 +48,16 @@ int main()
     //std::future<int> result = std::async(calculate,3);
     //std::cout << result.get() << std::endl;
     std::vector<std::string> resStr;
-   
-    
+    auto tp1 = std::chrono::high_resolution_clock::now();
+
+
+    //std::cout << pow(BigInt(123), BigInt(5));
+    std::cout << pow(123, 5);
+
+    auto tp2 = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsedTime = tp2 - tp1;
+    std::cout << "\nDone in " + std::to_string(elapsedTime.count()) + "s";
+   /*
     for (int nThreads = 1; nThreads <= 25; nThreads++)
     {
         clock_t begin_time = clock();
@@ -103,7 +104,7 @@ int main()
     }
     else std::cout << "Unable to create config.cfg file\n";
     //system("pause");
-
+    */
     //std::cin >> b;
     /*
     BigInt a = toBigInt("123456789987654321");
