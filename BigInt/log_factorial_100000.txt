@@ -1,0 +1,3 @@
+
+Done in 2.421420s
+Factorial have 456574 digigits!

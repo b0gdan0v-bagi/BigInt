@@ -17,7 +17,7 @@ BigInt simpleMulti(BigInt a, BigInt b)
 BigInt vectorParralelMultipicator(std::vector<BigInt> v)
 {
     BigInt ans;
-    std::cout << "Multiplicatin vector with size " << v.size() << "\n";
+    std::cout << "Multiplicating vector with size " << v.size() << "\n";
     switch (v.size())
     {
     case 0: return BIGINT_ONE;
@@ -37,7 +37,7 @@ BigInt vectorParralelMultipicator(std::vector<BigInt> v)
             for (int i = 0; i < size - 1; i += 2) results.push_back(std::async(std::launch::async, simpleMulti, v[i], v[i + 1]));
         }
         std::vector<BigInt> calc(results.size());
-        for (int i = 0; i < calc.size(); i++) calc[i] = results[i].get();
+        for (std::size_t i = 0; i < calc.size(); i++) calc[i] = results[i].get();
         ans = ans * vectorParralelMultipicator(calc);
 
         break;

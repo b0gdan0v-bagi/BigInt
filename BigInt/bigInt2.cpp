@@ -16,7 +16,7 @@ std::string BigInt::BigIntToStr()
 	std::string res, buff;
 	while (m_values.size() > 1 && m_values.back() == 0)m_values.pop_back();
 	(m_values.size() == 0) ? res += '0' : res += std::to_string(m_values.back());
-	for (int i = m_values.size() - 2; i >= 0; i--)
+	for (long long i = m_values.size() - 2; i >= 0; i--)
 	{
 		buff = std::to_string(m_values[i]);
 		while (buff.size() != 9) buff = '0' + buff;
@@ -39,7 +39,7 @@ std::ostream& operator<<(std::ostream& out, const BigInt& bigint)
 bool operator==(const BigInt& b1, const BigInt& b2)
 {
 	if (b1.m_values.size() != b2.m_values.size()) return false;
-	for (int i = 0; i < b1.m_values.size(); i++) if (b1.m_values[i] != b2.m_values[i]) return false;
+	for (long long i = 0; i < b1.m_values.size(); i++) if (b1.m_values[i] != b2.m_values[i]) return false;
 	return true;
 }
 
@@ -47,7 +47,7 @@ bool operator<(const BigInt& b1, const BigInt& b2)
 {
 	if (b1.m_values.size() != b2.m_values.size()) return (b1.m_values.size() < b2.m_values.size());
 	//FORD(i, b1.m_values.size() - 1, 0)
-	for (int i=b1.m_values.size()-1;i>=0;i--)
+	for (long long i=b1.m_values.size()-1;i>=0;i--)
 		if (b1.m_values[i] != b2.m_values[i]) return (b1.m_values[i] < b2.m_values[i]);
 
 	return false;
@@ -73,7 +73,7 @@ BigInt operator+(const BigInt &b1, const BigInt &b2)
 	BigInt ans;
 	int carry = 0;
 	// FOR(i, 0, max(a.size(), b.size()) - 1) 
-	for (int i = 0; i <= std::max(b1.m_values.size(), b2.m_values.size()) - 1; i++)
+	for (long long i = 0; i <= std::max(b1.m_values.size(), b2.m_values.size()) - 1; i++)
 	{
 		if (i < b1.m_values.size()) carry += b1.m_values[i];
 		if (i < b2.m_values.size()) carry += b2.m_values[i];
@@ -92,7 +92,7 @@ BigInt operator-(const BigInt& b1, const BigInt& b2)
 {
 	BigInt ans;
 	int carry = 0;
-	for (int i = 0; i < b1.m_values.size(); i++)
+	for (long long i = 0; i < b1.m_values.size(); i++)
 	{
 		carry += b1.m_values[i] - (i < b2.m_values.size() ? b2.m_values[i] : 0);
 		if (carry < 0) ans.m_values.push_back(carry + base), carry = -1;
@@ -107,10 +107,10 @@ BigInt operator*(const BigInt& b1, const BigInt& b2)
 {
 	BigInt ans;
 	ans.m_values.assign(b1.m_values.size() + b2.m_values.size(), 0);
-	for(int i = 0;i< b1.m_values.size();i++)
+	for(long long i = 0;i< b1.m_values.size();i++)
 	{
 		ll carry = 0ll;
-		for (int j = 0; j < b2.m_values.size() || carry > 0; j++) {
+		for (long long j = 0; j < b2.m_values.size() || carry > 0; j++) {
 			ll s = ans.m_values[i + j] + carry + (ll)b1.m_values[i] * (j < b2.m_values.size() ? (ll)b2.m_values[j] : 0ll);
 			ans.m_values[i + j] = s % base;
 			carry = s / base;
@@ -129,7 +129,7 @@ BigInt operator/(const BigInt& b1, const BigInt& b2)
 	}
 	BigInt ans, cur;
 	
-	for (int i = b1.m_values.size()-1; i>=0;i--)
+	for (long long i = b1.m_values.size()-1; i>=0;i--)
 	{
 		cur.m_values.insert(cur.m_values.begin(), b1.m_values[i]);
 		int x = 0, L = 0, R = base;
@@ -166,7 +166,7 @@ BigInt operator % (const BigInt& b1, const BigInt& b2)
 		return BigInt("-1");
 	}
 	BigInt cur;
-	for (int i = b1.m_values.size() - 1; i >= 0; i--)
+	for (long long i = b1.m_values.size() - 1; i >= 0; i--)
 	{
 		cur.m_values.insert(cur.m_values.begin(), b1.m_values[i]);
 		int x = 0, L = 0, R = base;
@@ -190,7 +190,7 @@ BigInt operator%(const BigInt& b1, const int& b2)
 {
 	BigInt ans;
 	ll cur = 0ll;
-	for (int i = b1.m_values.size() - 1; i >= 0; i--)
+	for (long long i = b1.m_values.size() - 1; i >= 0; i--)
 	{
 		cur = (cur * (ll)base + (ll)b1.m_values[i]);
 		ans.m_values.insert(ans.m_values.begin(), cur / b2);
