@@ -9,114 +9,71 @@
 #include <algorithm>
 #include <fstream>
 
-
-bool is_prime(int x) {
-    //std::cout << "Calculating. Please, wait...\n";
-    for (int i = 2; i < x; ++i) if (x % i == 0) return false;
-    return true;
+BigInt factorialPartial(int s, int a)
+{
+    if (a < s) return BIGINT_ONE;
+    if (a == s) return BigInt(a);
+    BigInt ans = BIGINT_ONE;
+    if (a > s)
+    {
+        for (int i = s; i <= a; i++) ans = ans * BigInt(i);
+    }
+    return ans;
 }
 
-BigInt powP(BigInt a, BigInt b, int nThreads)
+BigInt factorialP(int a, int nThreads = 10)
 {
-    if (b == BIGINT_ZERO) return BIGINT_ONE;
-    BigInt tmp = pow(a, b / BIGINT_TWO);
-    if (b % 2 == 0) return tmp * tmp;
-    return tmp * tmp * a;
+    BigInt ans;
+    int startPos, lBound, uBound;
+    if (a % nThreads == 0)
+    {
+        startPos = 0;
+        ans = BIGINT_ONE;
+    }
+    else
+    {
+        startPos = a % nThreads;
+        ans = factorial(startPos);
+    }
+    std::cout << "start pos " << startPos << " " << ans << "\n";
+    std::vector<std::future<BigInt>> par;
+    for (int i = 0; i < nThreads; i++)
+    {
+        lBound = startPos + 1 + a * i / nThreads;
+        if (i != nThreads - 1) uBound = startPos + a * (i + 1) / nThreads;
+        else uBound = a;
+        if (lBound > a) lBound = a;
+        if (uBound > a) uBound = a;
+        if (lBound == a && uBound == a) { lBound = 1; uBound = 1; }
+        //std::cout << "Workers pos " << lBound << " " << uBound << "\n";
+        par.push_back(std::async(std::launch::async, factorialPartial, lBound, uBound));
+    }
+    for (auto i = par.begin(); i != par.end(); i++) ans = ans * (*i).get();
+
+    return ans;
 }
 
 int main()
 {
-
-    //std::cout << a+b;
-    //std::cout << b << "\n";
-    
-
-    //BigInt c = BigInt("123456789987654321") * BigInt("123456789987654320");
-    //std::cout << c - BigInt("15241578994055784077274805802316720") << "\n";
-    //std::cout << BigInt("123456789987654321")*BigInt("123456789987654320");
-    //std::cout << BigInt("1234567899876543218383838383838477777777777777777777")*BigInt("12e333333333333342342342354644234343433456789987654320")
-    //    *BigInt("38381231247347237923379");
-    //std::cout << BigInt("1234567899876543218383838383838477777777777777777777") / BigInt("12e3333333333333424343433456789987654320")
-    //        *BigInt("38381231247347237923379");
-    //std::cout << BigInt(123456) % BigInt(10);
-    //BigInt c = factorial(10000);
-    //std::cout << c;
-    //unsigned const int nThreads = std::thread::hardware_concurrency();
-    //unsigned const int nThreads = 100;
-
-    //std::cout << nThreads << "\n";
-    //std::future<int> result = std::async(calculate,3);
-    //std::cout << result.get() << std::endl;
-    std::vector<std::string> resStr;
+    int number = 50000;
     auto tp1 = std::chrono::high_resolution_clock::now();
-
-
-    //std::cout << pow(BigInt(123), BigInt(5));
-    std::cout << pow(123, 5);
-
+    auto test = factorial(number);
     auto tp2 = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsedTime = tp2 - tp1;
-    std::cout << "\nDone in " + std::to_string(elapsedTime.count()) + "s";
-   /*
-    for (int nThreads = 1; nThreads <= 25; nThreads++)
-    {
-        clock_t begin_time = clock();
-        std::vector<std::future<bool>> VF;
-        for (int i = 0; i < nThreads; i++)
-        {
-            VF.push_back(std::async(is_prime, 313222313));
-        }
-        std::vector<bool> V(VF.size());
-        for (int i = 0; i < nThreads; i++)
-        {
-            V[i] = VF[i].get();
-        }
-        for (int i = 0; i < nThreads; i++)
-        {
-            //std::cout << "Checking whether " << 313222313 + i << "  is prime.\n";
-            if (V[i]) std::cout << "+";
-            else std::cout << "-";
-        }
-        float parallel = float(clock() - begin_time) / CLOCKS_PER_SEC;
-        //std::cout << "\nDone in " << float(clock() - begin_time) / CLOCKS_PER_SEC << " sec\n";
-        begin_time = clock();
-        std::cout << "\n";
-        for (int i = 0; i < nThreads; i++)
-        {
-            //std::cout << "Checking whether " << 313222313 + i << "  is prime.\n";
-            if (is_prime(313222313)) std::cout << "+";
-            else std::cout << "-";
-        }
-        std::cout << "\n";
-        //std::cout << "\nDone in " << float(clock() - begin_time) / CLOCKS_PER_SEC << " sec\n";
-        float once = float(clock() - begin_time) / CLOCKS_PER_SEC;
-        std::cout << "By " << nThreads << " done by ratio " << once / parallel << " parallel = " << parallel
-            << " once = " << once << "\n";
-        resStr.push_back(std::to_string(nThreads) + " " + std::to_string(once / parallel) + " " +
-            std::to_string(parallel) + " " + std::to_string(once));
-    }
-
-    std::ofstream output("output.txt");
-    if (output.is_open())
-    {
-        for (auto const& i : resStr) output << i << "\n";
-        output.close();
-    }
-    else std::cout << "Unable to create config.cfg file\n";
+    std::cout << "\nDone in " + std::to_string(elapsedTime.count()) + "s\n";
+    int const nThreads_MAX = 30;
+    //auto testP = factorialP(number, 7);
+    //std::cout << test - testP << "\n";
     //system("pause");
-    */
-    //std::cin >> b;
-    /*
-    BigInt a = toBigInt("123456789987654321");
-    std::cout << BigIntToStr(a);
-    system("pause");
-    const clock_t begin_time = clock();
-    BigInt answer = pow(toBigInt(123232), 694);
+    for (int i = 3; i <= nThreads_MAX; i++)
+    {
+        tp1 = std::chrono::high_resolution_clock::now();
+        auto testP = factorialP(number, i);
+        tp2 = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> elapsedTimeP = tp2 - tp1;
+        std::cout << "\nFor nTreads = " << i << " done in " + std::to_string(elapsedTimeP.count()) + "s\n";
+        std::cout << "Ratio is " + std::to_string(elapsedTime.count() / elapsedTimeP.count()) + "s\n";
+        std::cout << "Correct? " << test - testP << "\n";
+    }
     
-    std::cout << BigIntToStr(answer);
-
-    std::cout << "Done in " << float(clock() - begin_time) / CLOCKS_PER_SEC << " sec\n";
-    std::cout << "123232^69402 have " << answer.size() * 9 << " digits, here its list\n";
-    system("pause");
-    return 0;*/
 }

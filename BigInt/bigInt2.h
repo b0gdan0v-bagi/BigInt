@@ -14,6 +14,7 @@ typedef std::vector<int> bigInt;
 
 class BigInt 
 {
+public:
     std::vector<int> m_values;
 public:
     BigInt() {}
@@ -37,7 +38,9 @@ public:
     friend BigInt operator - (const BigInt& b1, const BigInt& b2);
     friend BigInt operator * (const BigInt& b1, const BigInt& b2);
     friend BigInt operator / (const BigInt& b1, const BigInt& b2);
+    friend BigInt operator / (const BigInt& b1, const int& b2);
     friend BigInt operator % (const BigInt& b1, const BigInt& b2);
+    friend BigInt operator % (const BigInt& b1, const int& b2);
     
 
 
@@ -57,7 +60,7 @@ private:
         }
         ans.reserve(reverseAns.size());
         for (auto i = reverseAns.rbegin(); i != reverseAns.rend(); i++) ans.push_back(*i);
-        Set();
+        //while (ans.m_values.size() > 1 && m_values.back() == 0) m_values.pop_back();
        // std::cout << ans.size();
         return ans;
     }
@@ -72,7 +75,7 @@ private:
             for (int j = i; j < i + 9; j++) v = v * 10 + (s[j] - '0');
             ans.insert(ans.begin(), v);
         }
-        Set();
+        //while (ans.m_values.size() > 1 && ans.m_values.back() == 0) { ans.m_values.pop_back(); }
         return ans;
     }
 

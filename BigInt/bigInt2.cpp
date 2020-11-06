@@ -14,7 +14,7 @@ void BigInt::PrintInt()
 std::string BigInt::BigIntToStr()
 {
 	std::string res, buff;
-	Set();
+	while (m_values.size() > 1 && m_values.back() == 0)m_values.pop_back();
 	(m_values.size() == 0) ? res += '0' : res += std::to_string(m_values.back());
 	for (int i = m_values.size() - 2; i >= 0; i--)
 	{
@@ -25,7 +25,9 @@ std::string BigInt::BigIntToStr()
 	return res;
 }
 
-void BigInt::Set() { while (m_values.size() > 1 && m_values.back() == 0) m_values.pop_back(); }
+void BigInt::Set() {
+	while (m_values.size() > 1 && m_values.back() == 0) { std::cout << "SET WORKING!\n"; m_values.pop_back(); }
+}
 
 std::ostream& operator<<(std::ostream& out, const BigInt& bigint)
 {
@@ -79,7 +81,8 @@ BigInt operator+(const BigInt &b1, const BigInt &b2)
 		carry /= base;
 	}
 	if (carry) ans.m_values.push_back(carry);
-	ans.Set();
+	//ans.Set();
+	while (ans.m_values.size() > 1 && ans.m_values.back() == 0) ans.m_values.pop_back(); 
 	//for (auto i = ans.m_values.rbegin(); i != ans.m_values.rend(); i++) std::cout << *i << "\n";
 	
 	return ans;
@@ -95,7 +98,8 @@ BigInt operator-(const BigInt& b1, const BigInt& b2)
 		if (carry < 0) ans.m_values.push_back(carry + base), carry = -1;
 		else ans.m_values.push_back(carry), carry = 0;
 	}
-	ans.Set();
+	//ans.Set();
+	while (ans.m_values.size() > 1 && ans.m_values.back() == 0) ans.m_values.pop_back();
 	return ans;
 }
 
@@ -112,7 +116,8 @@ BigInt operator*(const BigInt& b1, const BigInt& b2)
 			carry = s / base;
 		}
 	}
-	ans.Set();
+	//ans.Set();
+	while (ans.m_values.size() > 1 && ans.m_values.back() == 0) { ans.m_values.pop_back(); }
 	return ans;
 }
 
@@ -140,7 +145,17 @@ BigInt operator/(const BigInt& b1, const BigInt& b2)
 		cur = cur - BigInt(x - 1) * b2;
 		ans.m_values.insert(ans.m_values.begin(), x - 1);
 	}
-	ans.Set();
+	//ans.Set();
+	while (ans.m_values.size() > 1 && ans.m_values.back() == 0) ans.m_values.pop_back();
+	return ans;
+}
+
+BigInt operator/(const BigInt& b1, const int& b2)
+{
+	if (b2 == 0) return -1;
+	int ans = 0;
+	for(int i = b1.m_values.size() - 1; i>=0;i--)
+		ans = (ans * (base % b2) + b1.m_values[i] % b2) % b2;
 	return ans;
 }
 
@@ -166,8 +181,24 @@ BigInt operator % (const BigInt& b1, const BigInt& b2)
 		}
 		cur = cur - BigInt(x - 1) * b2;
 	}
-	cur.Set();
+	//cur.Set();
+	while (cur.m_values.size() > 1 && cur.m_values.back() == 0) cur.m_values.pop_back();
 	return cur;
+}
+
+BigInt operator%(const BigInt& b1, const int& b2)
+{
+	BigInt ans;
+	ll cur = 0ll;
+	for (int i = b1.m_values.size() - 1; i >= 0; i--)
+	{
+		cur = (cur * (ll)base + (ll)b1.m_values[i]);
+		ans.m_values.insert(ans.m_values.begin(), cur / b2);
+		cur %= b2;
+	}
+	//ans.Set();
+	while (ans.m_values.size() > 1 && ans.m_values.back() == 0) ans.m_values.pop_back();
+	return ans;
 }
 
 BigInt sqrt(BigInt a)
@@ -209,7 +240,8 @@ BigInt factorial(int a)
 	{
 		ans = ans * BigInt(i);
 	}
-	ans.Set();
+	//ans.Set();
+	while (ans.m_values.size() > 1 && ans.m_values.back() == 0) ans.m_values.pop_back();
 	return ans;
 }
 
